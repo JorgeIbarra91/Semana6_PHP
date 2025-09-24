@@ -1,11 +1,15 @@
 <?php
-
 namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function index(): string
+    // pagina principal
+    public function index()
     {
-        return view('welcome_message');
+        // Carga las vistas: encabezado, contenido y pie de página
+        return view('layout/header')
+            . view('home/index')
+            . view('layout/footer');
     }
 }
+?>
