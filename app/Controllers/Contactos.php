@@ -12,23 +12,48 @@ class Contactos extends BaseController
             . view('layout/footer');
     }
 
-    // Procesa el envío del formulario
+    // Procesa el envio del formulario con validaciones y mensajes personalizados
     public function enviar()
     {
         $contactoModel = new ContactoModel();
 
-        // Obtiene datos del formulario
-        $nombre = $this->request->getPost('nombre');
-        $correo = $this->request->getPost('correo');
-        $mensaje = $this->request->getPost('mensaje');
+        // Reglas de validacion para los campos del formulario
+        $validationRules = [
+            'nombre' => 'required|min_length[3]|max_length[50]',
+            'correo' => 'required|valid_email',
+            'mensaje' => 'required|min_length[10]|max_length[500]'
+        ];
 
-        // Valida datos básicos
-        if (strlen($nombre) < 3 || !filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($mensaje) < 10) {
-            // Redirige con error si falla validación
-            return redirect()->to('/contactos')->with('error','Datos inválidos en el formulario.');
+        // Mensajes personalizados para cada regla de validacion
+        $validationMessages = [
+            'nombre' => [
+                'required' => 'El campo Nombre es obligatorio.',
+                'min_length' => 'El campo Nombre debe tener al menos 3 caracteres.',
+                'max_length' => 'El campo Nombre no puede exceder 50 caracteres.'
+            ],
+            'correo' => [
+                'required' => 'El campo Correo es obligatorio.',
+                'valid_email' => 'Debe ingresar un correo valido.'
+            ],
+            'mensaje' => [
+                'required' => 'El campo Mensaje es obligatorio.',
+                'min_length' => 'El campo Mensaje debe tener al menos 10 caracteres.',
+                'max_length' => 'El campo Mensaje no puede exceder 500 caracteres.'
+            ]
+        ];
+
+        // Validar los datos recibidos con las reglas y mensajes personalizados
+        if (!$this->validate($validationRules, $validationMessages)) {
+            // Si la validacion falla, redirige atras con los errores y los datos ingresados
+            return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
-        // Inserta mensaje en la base de datos con fecha actual
+        // Obtener datos sanitizados del formulario
+        $nombre = $this->request->getPost('nombre', FILTER_SANITIZE_STRING);
+        $correo = $this->request->getPost('correo', FILTER_SANITIZE_EMAIL);
+        $mensaje = $this->request->getPost('mensaje', FILTER_SANITIZE_STRING);
+
+        // Insertar el mensaje en la base de datos con la fecha actual
         $contactoModel->insert([
             'nombre' => $nombre,
             'correo' => $correo,
@@ -36,8 +61,7 @@ class Contactos extends BaseController
             'fecha' => date("Y-m-d H:i:s")
         ]);
 
-        // Redirige con mensaje de éxito
-        return redirect()->to('/contactos')->with('mensaje','Mensaje enviado correctamente.');
+        // Redirigir al formulario con mensaje de exito
+        return redirect()->to('/contactos')->with('mensaje', 'Mensaje enviado correctamente.');
     }
 }
-?>
