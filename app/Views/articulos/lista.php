@@ -10,7 +10,7 @@
     <?php foreach($articulos as $articulo): ?>
         <div class="card mb-3">
             <?php if($articulo['imagen']): ?>
-                <img src="<?= base_url('writable/uploads/' . $articulo['imagen']) ?>" class="card-img-top" alt="Imagen noticia">
+                <img src="<?= base_url('uploads/' . esc($articulo['imagen'])) ?>" alt="Imagen noticia">
             <?php endif; ?>
             <div class="card-body">
                 <h5 class="card-title"><?= esc($articulo['titulo']) ?></h5>

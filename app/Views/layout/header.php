@@ -14,6 +14,7 @@
     <li class="nav-item"><a class="nav-link" href="<?= base_url('/') ?>">Inicio</a></li>
     <li class="nav-item"><a class="nav-link" href="<?= base_url('/usuarios/registro') ?>">Registro</a></li>
     <li class="nav-item"><a class="nav-link" href="<?= base_url('/contactos') ?>">Contacto</a></li>
+    
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Noticias
@@ -24,6 +25,7 @@
             <li><a class="dropdown-item" href="<?= base_url('/articulos/categoria/negocios') ?>">Negocios</a></li>
         </ul>
     </li>
+    <a href="<?= base_url('articulos/crear') ?>" class="btn btn-primary">Crear Nuevo Artículo</a>
 </ul>
     </div>
   </div>
