@@ -1,2 +1,5 @@
 <h1>Bienvenido a El Faro</h1>
-<p>Noticias actualizadas dinámicamente.</p>
+<p>Noticias actualizadas dinamicamente.</p>
+
+
+
