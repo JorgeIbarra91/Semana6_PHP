@@ -1,47 +1,66 @@
 <?php
 namespace App\Controllers;
-use App\Models\ArticuloModel;
 
+use App\Models\ArticuloPDO;
+
+/**
+ * Controlador Articulos
+ * Implementa la lógica de artículos usando PDO + Procedimientos Almacenados.
+ */
 class Articulos extends BaseController
 {
-    protected $articuloModel;
+    protected $articuloPDO;
 
     public function __construct()
     {
-        $this->articuloModel = new ArticuloModel();
+        // Usamos el modelo con PDO
+        $this->articuloPDO = new ArticuloPDO();
     }
 
-    // Listado general de noticias para la pagina principal
+    /**
+     * Listado general de noticias para la página principal
+     */
     public function index()
     {
-        $data['articulos'] = $this->articuloModel->orderBy('fecha', 'DESC')->findAll();
-        return view('layout/header')
-            . view('articulos/lista', $data)
-            . view('layout/footer');
+        // Obtenemos todos los artículos (puedes crear un SP para esto también)
+        $data['articulos'] = $this->articuloPDO->obtenerTodos();
+
+        echo view('layout/header');
+        echo view('articulos/lista', $data);
+        echo view('layout/footer');
     }
 
-    // Listado de noticias por categoria (deportes, negocios, etc)
+    /**
+     * Listado de noticias por categoría (deportes, negocios, etc)
+     */
     public function categoria($categoria = null)
     {
         if ($categoria === null) {
             return redirect()->to('/articulos');
         }
-        $data['articulos'] = $this->articuloModel->where('categoria', $categoria)->orderBy('fecha', 'DESC')->findAll();
+
+        // Usamos el SP con PDO
+        $data['articulos'] = $this->articuloPDO->obtenerPorCategoria(strtolower($categoria));
         $data['categoria'] = ucfirst($categoria);
-        return view('layout/header')
-            . view('articulos/categoria', $data)
-            . view('layout/footer');
+
+        echo view('layout/header');
+        echo view('articulos/categoria', $data);
+        echo view('layout/footer');
     }
 
-    // Formulario para agregar noticia 
+    /**
+     * Formulario para agregar noticia
+     */
     public function crear()
     {
-        return view('layout/header')
-            . view('articulos/crear')
-            . view('layout/footer');
+        echo view('layout/header');
+        echo view('articulos/crear');
+        echo view('layout/footer');
     }
 
-    // Guardar noticia
+    /**
+     * Guardar noticia mediante procedimientos almacenados
+     */
     public function guardar()
     {
         $validationRules = [
@@ -55,21 +74,49 @@ class Articulos extends BaseController
             return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
+        // Subida de imagen
         $imagenNombre = null;
         $imagenFile = $this->request->getFile('imagen');
         if ($imagenFile && $imagenFile->isValid() && !$imagenFile->hasMoved()) {
             $imagenNombre = $imagenFile->getRandomName();
-            $imagenFile->move(WRITEPATH . 'uploads', $imagenNombre);
+            $imagenFile->move(ROOTPATH . 'public/uploads', $imagenNombre);
         }
 
-        $this->articuloModel->insert([
-            'titulo' => $this->request->getPost('titulo'),
-            'contenido' => $this->request->getPost('contenido'),
-            'categoria' => $this->request->getPost('categoria'),
-            'imagen' => $imagenNombre,
-            'fecha' => date('Y-m-d H:i:s')
-        ]);
+        // Inserción usando SP
+        $resultado = $this->articuloPDO->insertarArticulo(
+            $this->request->getPost('titulo'),
+            $this->request->getPost('contenido'),
+            strtolower($this->request->getPost('categoria')),
+            $imagenNombre
+        );
 
-        return redirect()->to('/articulos')->with('mensaje', 'Articulo creado correctamente.');
+        if ($resultado) {
+            return redirect()->to('/articulos')->with('mensaje', 'Artículo creado correctamente con PDO + SP');
+        } else {
+            return redirect()->back()->with('error', 'Error al guardar el artículo.');
+        }
+    }
+
+    /**
+     * Ver un artículo individual por su ID
+     */
+    public function ver($id = null)
+    {
+        if ($id === null) {
+            return redirect()->to('/articulos')->with('error', 'Artículo no encontrado.');
+        }
+
+        // Usamos el método en el modelo PDO
+        $articulo = $this->articuloPDO->obtenerPorId($id);
+
+        if (!$articulo) {
+            return redirect()->to('/articulos')->with('error', 'Artículo no encontrado.');
+        }
+
+        $data['articulo'] = $articulo;
+
+        echo view('layout/header');
+        echo view('articulos/ver', $data);
+        echo view('layout/footer');
     }
 }

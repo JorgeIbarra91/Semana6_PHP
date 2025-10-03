@@ -9,13 +9,18 @@
 <?php else: ?>
     <?php foreach($articulos as $articulo): ?>
         <div class="card mb-3">
-            <?php if($articulo['imagen']): ?>
-                <img src="<?= base_url('uploads/' . esc($articulo['imagen'])) ?>" alt="Imagen noticia">
+            <?php if(!empty($articulo['imagen'])): ?>
+                <img src="<?= base_url('uploads/' . esc($articulo['imagen'])) ?>" alt="Imagen noticia" class="card-img-top">
             <?php endif; ?>
             <div class="card-body">
                 <h5 class="card-title"><?= esc($articulo['titulo']) ?></h5>
                 <p class="card-text"><?= esc(substr($articulo['contenido'], 0, 150)) ?>...</p>
-                <p class="card-text"><small class="text-muted"><?= date('d/m/Y H:i', strtotime($articulo['fecha'])) ?> - Categoria: <?= esc($articulo['categoria']) ?></small></p>
+                <p class="card-text">
+                    <small class="text-muted">
+                        <?= date('d/m/Y H:i', strtotime($articulo['fecha'])) ?> - Categoria: <?= esc($articulo['categoria']) ?>
+                    </small>
+                </p>
+                <a href="<?= base_url('articulos/ver/' . $articulo['id']) ?>" class="btn btn-primary btn-sm">Leer más</a>
             </div>
         </div>
     <?php endforeach; ?>
