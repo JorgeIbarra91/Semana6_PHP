@@ -12,9 +12,9 @@ use PDOException;
  */
 class DatabasePDO {
     private $host = "localhost";
-    private $db_name = "elfaro";   // 👈 Ajusta el nombre de tu BD
-    private $username = "root";    // 👈 Ajusta con tu usuario
-    private $password = "";        // 👈 Ajusta con tu pass
+    private $db_name = "elfaro";   //  Ajusta el nombre de tu BD
+    private $username = "root";    //  Ajusta con tu usuario
+    private $password = "";        //  Ajusta con tu pass
     private $conn;
 
     /**

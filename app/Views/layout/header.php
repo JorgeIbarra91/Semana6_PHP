@@ -1,39 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>El Faro</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
- </head>
-<body class="d-flex flex-column min-vh-100">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc($title ?? 'El Faro - Noticias') ?></title>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
+
+    <!-- Bootstrap 5 (para el diseño responsivo y moderno) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados para el proyecto "El Faro" -->
+    <style>
+        body {
+            background-color: #f4f6fb; /* Fondo general gris claro */
+        }
+
+        /* Barra de navegación principal */
+        .navbar {
+            background-color: #007bff; /* Azul institucional */
+        }
+
+        .navbar a {
+            color: white !important;
+            font-weight: 500;
+        }
+
+        /* Configuración de la barra lateral */
+        .sidebar {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        /* Diseño de las tarjetas de los artículos */
+        .card {
+            border: none;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+            transition: 0.2s;
+        }
+
+        /* Pie de página */
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e3e3e3;
+        }
+    </style>
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <!-- Nombre del sitio -->
     <a class="navbar-brand" href="<?= base_url('/') ?>">El Faro</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" 
-      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+
+    <!-- Botón de menú para versión móvil -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="<?= base_url('/') ?>">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= base_url('/usuarios/registro') ?>">Registro</a></li>
-        <li class="nav-item"><a class="nav-link" href="<?= base_url('/contactos') ?>">Contacto</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Noticias
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="<?= base_url('/articulos') ?>">Todas</a></li>
-            <li><a class="dropdown-item" href="<?= base_url('/articulos/categoria/deportes') ?>">Deportes</a></li>
-            <li><a class="dropdown-item" href="<?= base_url('/articulos/categoria/negocios') ?>">Negocios</a></li>
-          </ul>
+
+    <!-- Sección de enlaces -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- Noticias se convierte en la página de inicio -->
+        <li class="nav-item">
+          <a class="nav-link active" href="<?= base_url('/') ?>">Noticias</a>
+        </li>
+
+        <!-- Enlace para publicar nuevo artículo -->
+        <li class="nav-item">
+          <a class="nav-link" href="<?= base_url('articulos/crear') ?>">Publicar</a>
+        </li>
+
+        <!-- Formulario de contacto (opcional) -->
+        <li class="nav-item">
+          <a class="nav-link" href="<?= base_url('contactos') ?>">Contacto</a>
         </li>
       </ul>
-      <a href="<?= base_url('articulos/crear') ?>" class="btn btn-primary">Crear Nuevo Artículo</a>
     </div>
   </div>
 </nav>
 
-<div class="container flex-grow-1 mt-4">
-<!-- Aqui empieza el contenido principal -->
+<!--
+==========================================================
+Inicio del contenedor principal
+Todas las vistas se mostrarán dentro de este espacio.
+==========================================================
+-->
+<div class="container mt-4">
+<div class="row">
